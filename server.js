@@ -1,5 +1,5 @@
 const express = require('express')
-// var cors = require('cors')
+var cors = require('cors')
 const morgan = require('morgan')
 const mysql = require('mysql2')
 
