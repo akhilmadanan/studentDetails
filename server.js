@@ -5,7 +5,7 @@ const mysql = require('mysql2')
 
 const app = express()
 
-// app.use(cors())
+app.use(cors())
 
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms"))
 
