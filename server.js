@@ -6,6 +6,7 @@ const mysql = require('mysql2')
 const app = express()
 
 app.use(cors())
+app.use(express.json());
 
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms"))
 
@@ -36,14 +37,21 @@ async function randomId() {
   return randomId
 }
 
+async function getAllStudents() {
+  const [rows] = await pool.promise().query(
+    "SELECT * FROM characters"
+  )
+  return rows
+}
+
 app.get("/test", (req, res) => {
   res.send("<h1>It's working 🤗</h1>")
 })
 
 app.get("/", async (req, res) => {
   try {
-    const id = await randomId()
-    const character = await getCharacter(id)
+    // const id = await randomId()
+    const character = await getAllStudents()
     res.send(character)
   } catch (error) {
     res.send(error)
@@ -59,6 +67,24 @@ app.get("/:id", async (req, res) => {
     res.send(error)
   }
 })
+
+app.post("/:add", async (req, res) => {
+  try {
+    console.log(req.body.stdName);
+    let name = req.body.stdName;
+    let stdDivion = req.body.stdDivion
+    const [rows] = await pool.promise().query(
+      "INSERT INTO characters VALUES (?, ?, ?)", [
+        getRandomInt(20), name, stdDivion
+      ])
+
+    res.statusCode(200)
+
+  } catch (error) {
+    res.send(error)
+  }
+})
+
 
 const port = process.env.PORT || 8080
 app.listen(port, () => console.log(`Listening on port ${port}`))
